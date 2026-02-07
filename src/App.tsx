@@ -101,6 +101,11 @@ function App() {
               ? "无法连接语音服务（网络错误）。请检查网络、防火墙或 VPN 是否允许访问 Google 语音服务，或稍后重试。"
               : "语音识别需要 HTTPS 环境，请使用 https://localhost:5173 访问。"
             : `识别错误: ${event.error}`
+        // #region agent log
+        if (event.error === "network" && isSecure) {
+          fetch('http://127.0.0.1:7246/ingest/410ced30-775d-4191-8b02-5afdfc6a11fa',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'App.tsx:setError',message:'setError network-https',data:{error:event.error,origin:typeof window!=='undefined'?window.location?.origin:''},timestamp:Date.now(),hypothesisId:'E'})}).catch(()=>{});
+        }
+        // #endregion
         setError(message)
       }
     }
